@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "149228238848",
+    "project_id": "first-expo-proj",
+    "storage_bucket": "first-expo-proj.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149228238848:android:99e6158b840802147740e5",
+        "android_client_info": {
+          "package_name": "com.jonathannoyu.firstexpoproj"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBMUoMNuQm8YYzuNjrJ_PM2ijbdaSVons"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
