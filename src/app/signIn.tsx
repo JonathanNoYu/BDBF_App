@@ -66,7 +66,7 @@ export default function SignIn() {
           {
             loading? (
               <ThemedView>
-                <LoadingScreen size={hp(10)} />
+                <LoadingScreen size={hp(10)} loading={loading} />
               </ThemedView>
             ):(
               <ThemedView>

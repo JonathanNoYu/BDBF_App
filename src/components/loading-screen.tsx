@@ -1,14 +1,18 @@
-import LottieView from 'lottie-react-native';
-import { DimensionValue, View } from 'react-native';
+import { ActivityIndicator, DimensionValue, View } from 'react-native';
 
-export default function LoadingScreen({size} : {size:DimensionValue | undefined}) {
+interface LoadingProps{
+    size: DimensionValue | undefined;
+    loading: boolean;
+}
+
+export default function LoadingScreen({size, loading} : LoadingProps) {
     return (
         <View style={{height: size, justifyContent: 'center', alignItems: 'center'}}>
-            <LottieView 
-                source={require('../assets/images/loading.json')} 
-                loop
-                autoPlay
-                style={{ width: 200, height: 200 }}/>
+            <ActivityIndicator 
+                size="large" 
+                color="#624494"
+                animating={loading}
+                hidesWhenStopped={true}/>
         </View>
     )
 }
