@@ -10,13 +10,15 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import LoadingScreen from '../components/loading-screen';
 import ScrollableKeyBoardView from '../components/scrollableKeyBoardView';
 import { styles } from '../constants/mobile/mobile_forum';
+import { useAuth } from '../hooks/useAuth';
 
-export default function SignIn() {
+export default function SignUp() {
   const router = useRouter();
   const nameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const teamRef = useRef("");
+  const { register } = useAuth()
 
   const [hidPass, setHidPass] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -27,10 +29,45 @@ export default function SignIn() {
       return
     }
 
+    // Password Requirement Check
+    let passIssueMessage = ''
+    let error = false;
+    var specialCharFormat = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    if (passwordRef.current.length < 6) {
+      passIssueMessage += "Your password needs a minimum of four characters. ";
+      error = true;
+    }
+    if (passwordRef.current.search(/[A-Z]/) == -1) {
+      passIssueMessage += "Your password needs at least one upper case letter. ";
+      error = true;
+    }
+    if (passwordRef.current.search (/[0-9]/) == -1) {
+      passIssueMessage += "Your password needs a number.";
+      error = true;
+    }
+    if (!specialCharFormat.test(passwordRef.current)) {
+      passIssueMessage += "Your password needs a special character.";
+      error = true;
+    }
+    if (error) {
+      Alert.alert(passIssueMessage);
+      return;
+    }
+
     // Sign Up process
     setLoading(true)
-
+    let response
+    try {
+      response = await register(emailRef.current, passwordRef.current, nameRef.current, teamRef.current)
+    } catch (err) {
+      response = err
+    }
     setLoading(false)
+
+    console.log('got results: ', response)
+    if (!response.success) {
+      Alert.alert('Sign Up Issue', response.msg)
+    }
   }
   return (
     <ScrollableKeyBoardView style={styles.container}>

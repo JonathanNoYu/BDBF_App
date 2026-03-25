@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "src/components/loading-screen.js", "src/components/loading-screen.js", "src/components/loading-screen.js"  ]
+, "src/components/loading-screen.js", "src/components/loading-screen.js", "src/components/loading-screen.js", "src/context/authContext.js"  ]
 }

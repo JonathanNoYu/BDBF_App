@@ -10,6 +10,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import LoadingScreen from '../components/loading-screen';
 import ScrollableKeyBoardView from '../components/scrollableKeyBoardView';
 import { styles } from '../constants/mobile/mobile_forum';
+import { useAuth } from '../hooks/useAuth';
 
 export default function SignIn() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function SignIn() {
   const passwordRef = useRef("");
   const [hidPass, setHidPass] = useState(true);
   const [loading, setLoading] = useState(false);
+  const { logIn } = useAuth()
 
   const handleLogIn = async () => {
     if(!emailRef.current || !passwordRef.current) {
@@ -26,8 +28,17 @@ export default function SignIn() {
 
     // login process
     setLoading(true)
-
+    let response
+    try {
+      response = await logIn(emailRef.current, passwordRef.current)
+    } catch (err) {
+      response = err
+    }
     setLoading(false)
+    console.log('got results: ', response)
+    if (!response.success) {
+      Alert.alert('Sign Up Issue', response.msg)
+    }
   }
   return (
     <ScrollableKeyBoardView style={styles.container}>
@@ -87,7 +98,7 @@ export default function SignIn() {
 
       <ThemedView style={styles.more_options_container}>
         <ThemedText style={styles.grey_small_text}>Don't have an account?   </ThemedText>
-        <Pressable onPress={() => router.replace('/signUp')}>
+        <Pressable onPress={() => router.push('/signUp')}>
           <ThemedText style={styles.more_option_text}>Sign up</ThemedText>
         </Pressable>
       </ThemedView>

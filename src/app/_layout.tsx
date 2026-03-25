@@ -2,7 +2,8 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import { AuthContextProvider, useAuth } from '../context/authContext';
+import { AuthContextProvider } from '../context/authContext.js';
+import { useAuth } from '../hooks/useAuth';
 
 import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { useEffect } from 'react';
@@ -18,16 +19,15 @@ const MainLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // check if user is authenticated
-    if (!isAuthenticated) return;
+    if (typeof isAuthenticated === "undefined" || isAuthenticated === undefined) return;
     const inApp = segements[0] == '(tabs)';
     if (isAuthenticated && !inApp) {
-      router.replace('/signIn');
+      router.push('/(tabs)');
     } else if (!isAuthenticated) {
-      router.replace('/signIn')
+      router.push('/signIn')
     }
-
   },[isAuthenticated])
+
   return(
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>

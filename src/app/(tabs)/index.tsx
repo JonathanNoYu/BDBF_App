@@ -1,13 +1,30 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Alert, Button, Platform, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/src/components/hello-wave';
 import ParallaxScrollView from '@/src/components/parallax-scroll-view';
 import { ThemedText } from '@/src/components/themed-text';
 import { ThemedView } from '@/src/components/themed-view';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function HomeScreen() {
+  const router = useRouter()
+  const { logOut, user } = useAuth()
+  const handleLogout = async () => {
+    let response
+    try {
+      response = await logOut()
+    } catch (err) {
+      response = err
+    }
+
+    console.log('got results: ', response)
+    if (!response.success) {
+      Alert.alert('Sign Up Issue', response.msg)
+    }
+  }
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -74,6 +91,20 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <ThemedView>
+        {
+          user === null ? (
+            <ThemedView>
+              <Button title="Log In" onPress={() => router.replace('/signIn')} />
+            </ThemedView>
+          ) :(
+            <ThemedView>
+              <Button title="Sign Out" onPress={handleLogout} />
+            </ThemedView>
+          )
+        }
+      </ThemedView>
+      
     </ParallaxScrollView>
   );
 }

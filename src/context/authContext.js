@@ -1,45 +1,69 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { auth } from '@/firebaseConfig';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { createContext, useEffect, useState } from "react";
+import { db_firebase } from '../constants/firestore';
 
-export const AuthContext = createContext(null);
-
-export const useAuth = () => {
-    const value = useContext(AuthContext);
-    if (!value) throw new Error('useAuth must be wrapped inside AuthContextProvider') 
-    return value
-}
+export const AuthContext = createContext();
 
 export const AuthContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(undefined)
 
     useEffect(() => {
-        // onAuthStateChanged
-        setTimeout(() => {
-            setIsAuthenticated(true)
-        }, 1000)
+        const unsub = onAuthStateChanged(auth, (user) => {
+            console.log('got user', user)
+            if (user) {
+                setIsAuthenticated(true)
+                setUser(user)
+            } else {
+                setIsAuthenticated(false)
+                setUser(null)
+            }
+        })
+        return unsub
     }, [])
 
-    const logIn = async (email, password) => {
+    async function logIn(email, password) {
         try {
-
+            const response = await signInWithEmailAndPassword(auth, email, password)
+            return {success: true}
         } catch (err) {
-
+            let issue = err.code
+            if (issue.includes('auth/invalid-credential')) issue = 'Your email or password is incorrect'
+            return {success: false, msg: issue}
         }
     }
 
-    const logOut = async () => {
+    async function logOut() {
         try {
-
+            await signOut(auth)
+            return {success: true}
         } catch (err) {
-
+            let issue = err.code
+            return {success: false, msg: issue}
         }
     }
 
-    const register = async (email, password, username) => {
+    async function register(email, password, fullName, team) {
         try {
-
+            const response = await createUserWithEmailAndPassword(auth, email, password)
+            console.log('response:', response)
+            const docRes = await setDoc(doc(db_firebase, "users", response?.user?.uid), {
+                userId: response?.user?.uid,
+                fullName: fullName,
+                email: email,
+                team: [team],
+                pushNotifToken: [],
+            })
+            console.log('setDoc: ', docRes)
+            return {success: true, data: response?.user}
         } catch (err) {
-
+            console.log(err)
+            let issue = err.code
+            if (issue.includes('auth/invalid-email')) issue = 'Invalid email address'
+            if (issue.includes('auth/email-already-in-use')) issue = 'This email is already in use'
+            return {success: false, msg: issue}
         }
     }
 
