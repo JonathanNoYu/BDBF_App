@@ -1,9 +1,12 @@
+import { db_firebase } from "@/constants/firestore";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from 'expo-notifications';
 import { useRouter } from "expo-router";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform } from "react-native";
+import { useAuth } from "./use-auth";
 
 export interface PushNotificationState {
   expoPushToken?: Notifications.ExpoPushToken;
@@ -23,10 +26,37 @@ Notifications.setNotificationHandler({
 export const usePushNotifications = (): PushNotificationState => {
     const [expoPushToken, setExpoPushToken] = useState<Notifications.ExpoPushToken | undefined>( undefined);
     const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
+    const { isAuthenticated, user } = useAuth();
 
     //prevents duplicate navigations when a notification is tapped
     const isNavigatingRef = useRef(false);
     const router = useRouter();
+
+    async function addPushNotificationTokenToFirestore(token: Notifications.ExpoPushToken | undefined) {
+        // Add push token to database (takes a second to perform due to 2 await calls)
+        try {
+            if (isAuthenticated && user != null && token !== undefined) {
+                // Get existing push tokens (from other devices but same user)
+                const moreDocs = await getDoc(doc(db_firebase, "users", user.uid))
+                if (moreDocs.exists()) {
+                    // Get past user data and updated push token (filters for unique tokens)
+                    const pastUserData = moreDocs.data()
+                    const allTokens = [...pastUserData.pushNotifToken, token].map((t) => t.data)
+                    const noDupTokens = [...new Set(allTokens)].filter((t) => t !== undefined)
+                    const docRes = await setDoc(doc(db_firebase, "users", user.uid), {
+                        ...pastUserData,
+                        pushNotifToken: noDupTokens,
+                    })
+                } else {
+                    console.log("Could not find user in firestore")
+                }
+            } else {
+                console.log("No user or Token found")
+            }
+        } catch(err) {
+            console.log('Error in Adding Push Notfi token to firestore', err)
+        }
+    }
 
     async function registerForPushNotificationsAsync() : Promise<Notifications.ExpoPushToken | undefined> {
         if (Device.isDevice) {
@@ -71,13 +101,19 @@ export const usePushNotifications = (): PushNotificationState => {
             // Prevent multiple navigations
             if (isNavigatingRef.current) return;
             const data = response.notification.request.content.data;
-            if (!data?.screen) return;
-            isNavigatingRef.current = true;
+            console.log('notif data:', data)
             try {
-                router.push('/app');
+                if (data.goto) {
+                    switch(data.goto) {
+                        case '/explore':
+                            router.push('/explore');
+                            break
+                        }
+                };
             } catch (error) {
                 console.error("Error handling notification tap:", error);
-            } finally {
+            } 
+            finally {
                 // Reset flag after a short delay
                 setTimeout(() => {
                     isNavigatingRef.current = false;
@@ -89,7 +125,10 @@ export const usePushNotifications = (): PushNotificationState => {
     useEffect(() => {
         // Find better way to handle error here.
         registerForPushNotificationsAsync()
-        .then(token => setExpoPushToken(token))
+        .then((token) => {
+            setExpoPushToken(token)
+            addPushNotificationTokenToFirestore(token)
+        })
         .catch((error: any) => console.log(error));
 
         const notificationListener = Notifications.addNotificationReceivedListener(notification => {

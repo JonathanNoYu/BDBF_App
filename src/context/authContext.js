@@ -26,9 +26,11 @@ export const AuthContextProvider = ({children}) => {
 
     async function logIn(email, password) {
         try {
+            // Signs in, user will get updated in the useEffect above.
             const response = await signInWithEmailAndPassword(auth, email, password)
             return {success: true}
         } catch (err) {
+            console.log(err)
             let issue = err.code
             if (issue.includes('auth/invalid-credential')) issue = 'Your email or password is incorrect'
             return {success: false, msg: issue}
@@ -56,7 +58,6 @@ export const AuthContextProvider = ({children}) => {
                 team: [team],
                 pushNotifToken: [],
             })
-            console.log('setDoc: ', docRes)
             return {success: true, data: response?.user}
         } catch (err) {
             console.log(err)

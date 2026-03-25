@@ -19,7 +19,7 @@ const MainLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof isAuthenticated === "undefined" || isAuthenticated === undefined) return;
+    if (typeof isAuthenticated == "undefined" || isAuthenticated == undefined) return;
     const inApp = segements[0] == '(tabs)';
     if (isAuthenticated && !inApp) {
       router.replace('/(tabs)');

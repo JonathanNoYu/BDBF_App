@@ -2,7 +2,6 @@ import { PushNotificationState, usePushNotifications } from '@/hooks/use-push-no
 import * as Notifications from 'expo-notifications';
 import { Button, Text, View } from 'react-native';
 
-
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: true,
@@ -18,7 +17,7 @@ async function sendPushNotification(expoPushToken: string) {
     sound: 'default',
     title: 'Original Title',
     body: 'And here is the body!',
-    data: { someData: 'goes here' },
+    data: { goto: '/explore' },
   };
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -30,12 +29,6 @@ async function sendPushNotification(expoPushToken: string) {
     },
     body: JSON.stringify(message),
   });
-}
-
-
-function handleRegistrationError(errorMessage: string) {
-  alert(errorMessage);
-  throw new Error(errorMessage);
 }
 
 export default function App() {
