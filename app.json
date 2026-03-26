@@ -45,7 +45,14 @@
           }
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow BDBF_ProtoType to access your Face ID biometric data."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
