@@ -50,11 +50,11 @@ export const usePushNotifications = (): PushNotificationState => {
                     const noDupTokens = [...new Set(allTokens)].filter((t) => t !== undefined)
                     const docRes = await updateDoc(doc(db_firebase, "users", user.uid), {
                         ...pastUserData,
-                        pushNotifToken: noDupTokens,
+                        push_motif_token: noDupTokens,
                     })
                 } else {
                     await updateDoc(doc(db_firebase, "users", user.uid), {
-                        pushNotifToken: [token],
+                        push_motif_token: [token],
                     })
                 }
             } catch(err) {

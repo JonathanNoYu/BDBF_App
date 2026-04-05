@@ -52,11 +52,11 @@ export const AuthContextProvider = ({children}) => {
             const response = await createUserWithEmailAndPassword(auth, email, password)
             console.log('response:', response)
             const docRes = await setDoc(doc(db_firebase, "users", response?.user?.uid), {
-                userId: response?.user?.uid,
-                fullName: fullName,
+                user_id: response?.user?.uid,
+                full_name: fullName,
                 email: email,
-                team: [team],
-                pushNotifToken: [],
+                teams: [team],
+                push_notif_token: [],
             })
             return {success: true, data: response?.user}
         } catch (err) {
