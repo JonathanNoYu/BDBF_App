@@ -74,6 +74,14 @@ export const usePushNotifications = (): PushNotificationState => {
               const { status } = await Notifications.requestPermissionsAsync();
               finalStatus = status;
             }
+            if (Platform.OS === "android") {
+                await Notifications.setNotificationChannelAsync("default", {
+                    name: "default",
+                    importance: Notifications.AndroidImportance.MAX,
+                    vibrationPattern: [0, 250, 250, 250],
+                    lightColor: "#FF231F7C",
+                });
+            }
             let token;
             try {
                 const projectId =
@@ -89,14 +97,6 @@ export const usePushNotifications = (): PushNotificationState => {
 
             if (finalStatus !== "granted") {
                 return;
-            }
-            if (Platform.OS === "android") {
-                await Notifications.setNotificationChannelAsync("default", {
-                    name: "default",
-                    importance: Notifications.AndroidImportance.MAX,
-                    vibrationPattern: [0, 250, 250, 250],
-                    lightColor: "#FF231F7C",
-                });
             }
             console.log(token)
             return token;

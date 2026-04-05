@@ -1,30 +1,16 @@
 import { Image } from 'expo-image';
-import { Alert, Button, Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { SignInAndOut } from '@/components/sign-in-and-out';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link, useRouter } from 'expo-router';
-import { useAuth } from '../../hooks/use-auth';
+import { usePushNotifications } from '@/hooks/use-push-notifications';
+import { Link } from 'expo-router';
 
 export default function HomeScreen() {
-  const router = useRouter()
-  const { logOut, user } = useAuth()
-  const handleLogout = async () => {
-    let response
-    try {
-      response = await logOut()
-    } catch (err) {
-      response = err
-    }
-
-    console.log('got results: ', response)
-    if (!response.success) {
-      Alert.alert('Sign Up Issue', response.msg)
-    }
-  }
-
+  const _ = usePushNotifications()
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -35,7 +21,7 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome To BDBF!</ThemedText>
+        <ThemedText type="title">Welcome To Paddler!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -91,20 +77,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <ThemedView>
-        {
-          user === null ? (
-            <ThemedView>
-              <Button title="Log In" onPress={() => router.replace('/signIn')} />
-            </ThemedView>
-          ) :(
-            <ThemedView>
-              <Button title="Sign Out" onPress={handleLogout} />
-            </ThemedView>
-          )
-        }
-      </ThemedView>
-      
+      <SignInAndOut />
     </ParallaxScrollView>
   );
 }

@@ -30,7 +30,7 @@ const MainLayout = () => {
 
   return(
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
+        <Stack screenOptions={{headerShown:false}}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="signIn" options={{ headerShown: false }} />
           <Stack.Screen name="signUp" options={{ headerShown: false }} />
