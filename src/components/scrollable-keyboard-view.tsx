@@ -13,10 +13,12 @@ export default function ScrollableKeyBoardView({children, style, lightColor, dar
     return (
         <KeyboardAvoidingView
             behavior={ios? 'padding': 'height'}
-            style={[{ backgroundColor }, style]} {...otherProps}>
+            style={[{ backgroundColor }, style]}
+            {...otherProps}>
             <ScrollView
                 bounces={false}
-                showsVerticalScrollIndicator={false}>
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps={'handled'}>
                 {children}
             </ScrollView>
         </KeyboardAvoidingView>
