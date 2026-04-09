@@ -21,9 +21,7 @@ const MainLayout = () => {
   useEffect(() => {
     if (typeof isAuthenticated == "undefined" || isAuthenticated == undefined) return;
     const inApp = segements[0] == '(tabs)';
-    if (isAuthenticated && !inApp) {
-      router.replace('/(tabs)');
-    }
+    router.replace('/(tabs)');
   },[isAuthenticated])
 
   return(
