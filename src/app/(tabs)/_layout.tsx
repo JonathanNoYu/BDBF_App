@@ -5,6 +5,7 @@ import { Colors } from '@//constants/theme';
 import { useColorScheme } from '@//hooks/use-color-scheme';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -27,7 +28,7 @@ export default function TabLayout() {
         name="races"
         options={{
           title: 'Races',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="clipboard-list" color={color} />,
         }}
       />
       <Tabs.Screen

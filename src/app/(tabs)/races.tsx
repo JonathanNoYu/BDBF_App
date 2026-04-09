@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { Button, ScrollView, StyleSheet } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
@@ -6,13 +6,12 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { db_firebase } from '@/constants/firestore';
 import { Fonts } from '@/constants/theme';
-import { DocumentData, Timestamp, collection, onSnapshot, query, where } from 'firebase/firestore';
+import { DocumentData, Timestamp, addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 export default function RaceDataPage() {
   const [races, setRaces] = useState<DocumentData[]>([])
-  // const dateYear = new Date(Date.now()).getFullYear()
-  const dateYear = new Date('2025').getFullYear()
+  const dateYear = new Date(Date.now()).getFullYear()
   const thisYear = new Date(dateYear, 0, 1)
   useEffect(() => {
     const q = query(collection(db_firebase, "races"),
@@ -24,6 +23,19 @@ export default function RaceDataPage() {
       return unsub
     }, [])
   console.log(races)
+
+  const testingAddNewRace = async () => {
+    let zeroOrOne = Math.floor(Math.random());
+    let randomTeam = zeroOrOne == 0 ? "team1" : "team2"
+    console.log(randomTeam)
+    const res = await addDoc(collection(db_firebase, "races"), 
+    {
+      race_num: races?.length,
+      schedule_timestamp: Timestamp.now(),
+      completed_time_ms: [],
+      teams: [randomTeam],
+    })
+  }
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -32,10 +44,10 @@ export default function RaceDataPage() {
           size={310}
           color="#808080"
           name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
+          style={old_styles.headerImage}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
+      <ThemedView style={old_styles.titleContainer}>
         <ThemedText
           type="title"
           style={{
@@ -44,10 +56,11 @@ export default function RaceDataPage() {
           {thisYear.getUTCFullYear()} Races
         </ThemedText>
       </ThemedView>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingTop: 10}}>
+      <Button title="Add fake race" onPress={testingAddNewRace} />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{gap: 20}}>
         {
           races.map((race, index) => {
-            const schedule_timestamp = new Timestamp(race?.schedule_timestamp.seconds, race?.schedule_timestamp.nanoseconds).toDate().toString()
+            const schedule_timestamp = new Timestamp(race?.schedule_timestamp.seconds, race?.schedule_timestamp.nanoseconds).toDate().toLocaleString()
             return(
               <ThemedView key={index}>
                 <ThemedText>Race Number:{race?.race_num}</ThemedText>
@@ -63,7 +76,7 @@ export default function RaceDataPage() {
   );
 }
 
-const styles = StyleSheet.create({
+const old_styles = StyleSheet.create({
   headerImage: {
     color: '#808080',
     bottom: -90,
