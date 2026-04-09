@@ -5,9 +5,11 @@ import { Colors } from '@//constants/theme';
 import { useColorScheme } from '@//hooks/use-color-scheme';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAuth } from '@/hooks/use-auth';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function TabLayout() {
+  const {user, isAuthenticated} = useAuth()
   const colorScheme = useColorScheme();
 
   return (
@@ -31,13 +33,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="clipboard-list" color={color} />,
         }}
       />
-      <Tabs.Screen
+      <Tabs.Protected guard={isAuthenticated && user !== null}>
+        <Tabs.Screen
         name="app"
         options={{
           title: 'Push Notifications',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
+      </Tabs.Protected>
     </Tabs>
   );
 }

@@ -23,8 +23,6 @@ const MainLayout = () => {
     const inApp = segements[0] == '(tabs)';
     if (isAuthenticated && !inApp) {
       router.replace('/(tabs)');
-    } else if (!isAuthenticated) {
-      router.replace('/signIn')
     }
   },[isAuthenticated])
 
