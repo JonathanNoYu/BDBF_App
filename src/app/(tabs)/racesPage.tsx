@@ -12,7 +12,7 @@ import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
 export default function RaceDataPage() {
   const { races, nextUpcomingRace } = useFirestoreRaces()
-  const nextRace = nextUpcomingRace("team1")
+  const nextRace = nextUpcomingRace()
   console.log(nextRace)
   const testingAddNewRace = async () => {
     let zeroOrOne = Math.floor(Math.random());

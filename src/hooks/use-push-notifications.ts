@@ -57,7 +57,7 @@ export const usePushNotifications = (): PushNotificationState => {
                     })
                 } else {
                     await updateDoc(doc(db_firebase, "users", user.uid), {
-                        push_notif_token: [token],
+                        push_notif_token: [token.data],
                     })
                 }
             } catch(err) {

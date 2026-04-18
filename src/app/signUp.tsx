@@ -25,35 +25,31 @@ export default function SignUp() {
 
   const handleSignUp = async () => {
     if(!emailRef.current || !passwordRef.current || !nameRef.current || !teamRef.current) {
-      Alert.alert('Sign Up', 'Please fill all the fields!')
+      Alert.alert('Sign Up Issue', 'Please fill all the fields!')
       return
     }
+    let passIssueMessage = ''
     if(nameRef.current.split(" ").length < 2) {
-      Alert.alert('Sing Up', 'Please enter at least first and last name!')
+      passIssueMessage += 'Please enter at least first and last name!\n'
     }
 
     // Password Requirement Check
-    let passIssueMessage = ''
-    let error = false;
     var specialCharFormat = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (passwordRef.current.length < 6) {
-      passIssueMessage += "Your password needs a minimum of four characters. ";
-      error = true;
+      passIssueMessage += "Your password needs a minimum of four characters.\n";
     }
     if (passwordRef.current.search(/[A-Z]/) == -1) {
-      passIssueMessage += "Your password needs at least one upper case letter. ";
-      error = true;
+      passIssueMessage += "Your password needs at least one upper case letter.\n";
     }
     if (passwordRef.current.search (/[0-9]/) == -1) {
-      passIssueMessage += "Your password needs a number.";
-      error = true;
+      passIssueMessage += "Your password needs a number.\n";
     }
     if (!specialCharFormat.test(passwordRef.current)) {
-      passIssueMessage += "Your password needs a special character.";
-      error = true;
+      passIssueMessage += "Your password needs a special character.\n";
     }
-    if (error) {
-      Alert.alert(passIssueMessage);
+    if (passIssueMessage != '') {
+      passIssueMessage = passIssueMessage.slice(0, -2)
+      Alert.alert('Sign Up Issue', passIssueMessage);
       return;
     }
 

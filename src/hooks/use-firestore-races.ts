@@ -61,7 +61,6 @@ export const useFirestoreRaces = () => {
                 // Checks that index is not out of bounds and if teamname exists check if it is in the nextRace teams array.
                 while (i > 0) {
                     i = i - 1
-                    console.log(i)
                     nextRace = races[i]
                     if (!teamName || nextRace.teams.includes(teamName)) {
                         return nextRace
