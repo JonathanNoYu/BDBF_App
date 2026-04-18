@@ -15,9 +15,7 @@ import { useAuth } from "./use-auth"
  */
 export const useFirestoreUserData = () => {
     const [userData, setUserData] = useState<DocumentData | null>(null)
-    const [userTeams, setUserTeams] = useState<Object>({
-        thisYearString: []
-    })
+    const [userTeams, setUserTeams] = useState<Object>({})
     const { user } = useAuth()
 
     useEffect(() => {

@@ -22,15 +22,10 @@ export function SignInAndOut() {
     return(
         <ThemedView>
                 {
-                  user === null ? (
-                    <ThemedView>
-                      <Button title="Log In" onPress={() => router.replace('/signIn')} />
-                    </ThemedView>
-                  ) :(
-                    <ThemedView>
-                      <Button title="Sign Out" onPress={handleLogout} />
-                    </ThemedView>
-                  )
+                  user === null ?
+                  <Button title="Log In" onPress={() => router.replace('/signIn')} />
+                  :
+                  <Button title="Sign Out" onPress={handleLogout} />
                 }
         </ThemedView>
     )
